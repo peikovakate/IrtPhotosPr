@@ -35,7 +35,10 @@
             <CompositeTransform/>
         </Grid.RenderTransform>
 
-        <Image x:Name="image" Source="../Assets/Close.png" Width="500" Height="500" RenderTransformOrigin="0.5,0.5" >
+        <Image x:Name="image" Width="500" Height="500" CacheMode="BitmapCache">
+            <Image.Source>
+                <BitmapImage UriSource="../Assets/Close.png" />
+            </Image.Source>
             <Image.RenderTransform>
                 <CompositeTransform/>
             </Image.RenderTransform>

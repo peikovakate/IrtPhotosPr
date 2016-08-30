@@ -19,6 +19,12 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Diagnostics;
 using System.Threading;
+using static IrtPhotos.Source.Downloader;
+using Windows.UI.Core;
+using Windows.Media.Core;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Core;
+using Microsoft.AspNet.SignalR.Client;
 
 namespace IrtPhotos.Source
 {
@@ -45,29 +51,30 @@ namespace IrtPhotos.Source
         Rectangle r;
         private CloseAnimation closeAnim;
 
-        private const float borderWidth = 80;
+        private float borderWidth = 80;
         private float MinScale = 0.2f;
 
         AppearingDisapearingAnimations animation;
         const float blurConst = 15;
         Pointer remPointer;
         Pointer pointer;
-        bool stop = false;
+      
         SpriteVisual blurVisual;
 
         private int realWidth;
         private int realHeight;
 
         Storyboard _scaleAnim;
-        private CancellationTokenSource _tokenSource;
         Storyboard _closeAnim;
-      
-     
 
-        public IrtImage(Grid back, int angle)
+        public int Angle = 0;
+        public bool IsMoved = false;
+
+        //---------------------
+        public IrtImage(Grid back, int angle, int width, int height)
         {
             _backgroundGrid = back;
-
+            Angle = angle;
             _grid = new Grid();
             _shadowGrid = new Grid();
             _shadowOnTopRect = new Rectangle();
@@ -81,7 +88,14 @@ namespace IrtPhotos.Source
             _imageAppearence = animation.getImageAppearing();
             _deletingAnim = animation.getImageDeleting();
             _appearence = animation.getAppearing();
-            _scaleAnim = animation.getImageScale();
+
+
+            _grid.HorizontalAlignment = HorizontalAlignment.Center;
+            _grid.VerticalAlignment = VerticalAlignment.Center;
+            _backgroundGrid.Children.Add(_grid);
+
+            var scaleAnim = new ScaleAnim();
+            _scaleAnim = scaleAnim.getImageScale();
 
 
             var rotate = (DoubleAnimationUsingKeyFrames)_imageAppearence.Children[0];
@@ -113,7 +127,7 @@ namespace IrtPhotos.Source
             _grid.PointerPressed += _grid_PointerPressed;
             _grid.PointerReleased += _grid_PointerReleased;
 
-            image = new Image();
+           // image = new Image();
             r = new Rectangle(); //rectangle for image frame
             r.Fill = new SolidColorBrush(Colors.White);
             //r.RadiusX = borderWidth / 2;
@@ -123,24 +137,47 @@ namespace IrtPhotos.Source
             //_shadowOnTopRect.RadiusX = borderWidth / 2;
             //_shadowOnTopRect.RadiusY = borderWidth / 2;
             _bluredGrid.Children.Add(r);
-            _bluredGrid.Children.Add(image);
+            //_bluredGrid.Children.Add(image);
             _bluredGrid.Children.Add(_shadowOnTopRect);
-            _backgroundGrid.Children.Add(_grid);
 
-            
+            realHeight = height;
+            realWidth = width;
+
+
 
         }
 
         private void _closeAnim_Completed(object sender, object e)
         {
             removeClose();
-            if (_transform.ScaleX <= 0.21)
+   
+            if (_transform.ScaleX <= MinScale+0.01)
             {
+
                 _scaleAnim.Stop();
                 Storyboard.SetTarget(_scaleAnim.Children[0], _grid);
                 Storyboard.SetTarget(_scaleAnim.Children[1], _grid);
                 _scaleAnim.Begin();
+                //scaleComposition();
             }
+        }
+
+        private void scaleComposition()
+        {
+            var view = ElementCompositionPreview.GetElementVisual(_grid);
+            view.CenterPoint = new Vector3((float)_grid.ActualWidth/2.0f, (float)_grid.ActualHeight/2.0f, 0.0f);
+            var compositor = view.Compositor;
+            
+            var anim = compositor.CreateVector3KeyFrameAnimation();
+            anim.InsertKeyFrame(0.0f, new Vector3(1, 1, 0));
+            anim.InsertKeyFrame(1.0f, new Vector3(1.5f, 1.5f, 0));
+
+            anim.Duration = TimeSpan.FromSeconds(0.5);
+           
+            view.StartAnimation("Scale", anim);
+            //_transform = (CompositeTransform)_grid.RenderTransform;
+
+
         }
 
         private void _grid_PointerReleased(object sender, PointerRoutedEventArgs e)
@@ -187,13 +224,13 @@ namespace IrtPhotos.Source
                 realWidth = bitmap.PixelWidth;
                 realHeight = bitmap.PixelHeight;
 
-                r.Width = realWidth + borderWidth* 2;
-                r.Height = realHeight + borderWidth* 2;
+                r.Width = realWidth + borderWidth * 2;
+                r.Height = realHeight + borderWidth * 2;
                 _shadowOnTopRect.Width = r.Width;
                 _shadowOnTopRect.Height = r.Height;
-               
-                _grid.Height = r.Height+20;
-                _grid.Width = r.Width+20;
+
+                _grid.Height = r.Height + 20;
+                _grid.Width = r.Width + 20;
                 image.Width = realWidth;
             };
 
@@ -207,6 +244,56 @@ namespace IrtPhotos.Source
             _imageAppearence.Begin();
             _scaleAnim.Completed += _scaleAnim_Completed;
 
+        }
+
+        public void LoadImage(Image image)
+        {
+            this.image = image;
+            setSize();
+
+            // image.Width = realWidth;
+            _bluredGrid.Children.Add(this.image);
+            _imageAppearence.Completed += ImageAppearence_Completed;
+            _imageAppearence.Stop();
+
+            Storyboard.SetTarget(_imageAppearence.Children[0], _grid);
+            Storyboard.SetTarget(_imageAppearence.Children[1], _grid);
+            Storyboard.SetTarget(_imageAppearence.Children[2], _grid);
+            _appearence.Begin();
+            _imageAppearence.Begin();
+
+            _scaleAnim.Completed += _scaleAnim_Completed;
+
+        }
+
+        public void setSize()
+        {
+            //_grid.UseLayoutRounding = false;
+
+           
+            //int deltaX = 0, deltaY = 0;
+            //if (width > _backgroundGrid.ActualWidth)
+            //{
+            //    deltaX = (int)((width - _backgroundGrid.ActualWidth)/2*0.3);
+            //}
+            //if (width > _backgroundGrid.ActualWidth)
+            //{
+            //    deltaY = (int)((height - _backgroundGrid.ActualHeight)/2*0.3);
+            //}
+
+            image.Width = realWidth;
+            image.Height = realHeight;
+
+
+            borderWidth = (realWidth * 80) / 3000;
+
+            r.Width = realWidth + borderWidth * 2;
+            r.Height = realHeight + borderWidth * 2;
+            _shadowOnTopRect.Width = r.Width;
+            _shadowOnTopRect.Height = r.Height;
+
+            _grid.Height = r.Height;
+            _grid.Width = r.Width;
         }
 
         private void _scaleAnim_Completed(object sender, object e)
@@ -251,6 +338,8 @@ namespace IrtPhotos.Source
         private void Canvas_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             if (e.Container == null) return;
+
+            
 
             var potentialRotation = _transform.Rotation + e.Delta.Rotation;
             if (calcProjectionX(potentialRotation)<_backgroundGrid.ActualWidth && 
@@ -344,6 +433,7 @@ namespace IrtPhotos.Source
 
                 if (_transform.ScaleX <= MinScale+0.01)
                 {
+
                     addClose();
                 }
                 else
@@ -385,7 +475,9 @@ namespace IrtPhotos.Source
         }
 
         private void Canvas_ManipulationStarting(object sender, ManipulationStartingRoutedEventArgs e)
-        { 
+        {
+            if (e.Container == null) return;
+            IsMoved = true;
             foreach (var item in _backgroundGrid.Children)
             {
                 Canvas.SetZIndex(item, 0);
@@ -435,7 +527,7 @@ namespace IrtPhotos.Source
 
             var blur = new GaussianBlurEffect()
             {
-                Name = "Blur", // Name needed here so we can animate it.
+                Name = "Blur", 
                 BorderMode = EffectBorderMode.Hard,
                 BlurAmount = 0.0f,
                 Source = new CompositionEffectSourceParameter("source")

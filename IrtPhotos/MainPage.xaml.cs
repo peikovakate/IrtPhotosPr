@@ -19,6 +19,12 @@ using IrtPhotos.Source;
 using Microsoft.Graphics.Canvas.Brushes;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using Windows.UI.ViewManagement;
+using Microsoft.AspNet.SignalR.Client;
+using System.Threading.Tasks;
+using Windows.UI.Core;
+
+
+
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -28,13 +34,19 @@ namespace IrtPhotos
 
     public sealed partial class MainPage : Page
     {
-      
+
+       
+
         public MainPage()
         {
             //ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
             this.InitializeComponent();
 
+
         }
+
+
+        
 
 
         private void CanvasControl_OnDraw(CanvasControl sender, CanvasDrawEventArgs args)

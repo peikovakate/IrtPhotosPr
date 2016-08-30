@@ -42,12 +42,14 @@ namespace IrtPhotos.Source
             turnToButton.SpeedRatio = 2;
             turnToQr.SpeedRatio = 2;
             turnToButton.Completed += TurnToButton_Completed;
-            //turnToQr.Completed += turnToQr_Completed;
+            turnToQr.Completed += turnToQr_Completed;
         }
 
         private void TurnToButton_Completed(object sender, object e)
         {
             //attention.Stop();
+            //_transform = (CompositeTransform)this.RenderTransform;
+
             attention.Begin();
         }
 
@@ -83,29 +85,29 @@ namespace IrtPhotos.Source
         private void AddImageButton_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             if (e.Container == null) return;
-            if (Math.Abs(_backgroundGrid.ActualWidth / 2) - Math.Abs(_transform.TranslateX) - this.Width * _transform.ScaleX / 2 < 0.0)
+            if (Math.Abs(_backgroundGrid.ActualWidth / 2) - Math.Abs(_transform.TranslateX) - grid.ActualWidth * scale/ 2 < 0.0)
             {
                 _direction.X = !_direction.X;
                 if (_transform.TranslateX < 0)
                 {
-                    _transform.TranslateX -= Math.Abs(_backgroundGrid.ActualWidth / 2) - Math.Abs(_transform.TranslateX) - this.Width * _transform.ScaleX / 2;
+                    _transform.TranslateX -= Math.Abs(_backgroundGrid.ActualWidth / 2) - Math.Abs(_transform.TranslateX) - grid.ActualWidth * scale/ 2;
                 }
                 else
                 {
-                    _transform.TranslateX += Math.Abs(_backgroundGrid.ActualWidth / 2) - Math.Abs(_transform.TranslateX) - this.Width * _transform.ScaleX / 2;
+                    _transform.TranslateX += Math.Abs(_backgroundGrid.ActualWidth / 2) - Math.Abs(_transform.TranslateX) - grid.ActualWidth * scale/ 2;
                 }
             }
 
-            if (Math.Abs(_backgroundGrid.ActualHeight / 2) - Math.Abs(_transform.TranslateY) - this.Height * _transform.ScaleY / 2 < 0)
+            if (Math.Abs(_backgroundGrid.ActualHeight / 2) - Math.Abs(_transform.TranslateY) - grid.ActualHeight * scale/ 2 < 0)
             {
                 _direction.Y = !_direction.Y;
                 if (_transform.TranslateY < 0)
                 {
-                    _transform.TranslateY -= Math.Abs(_backgroundGrid.ActualHeight / 2) - Math.Abs(_transform.TranslateY) - this.Height * _transform.ScaleY / 2;
+                    _transform.TranslateY -= Math.Abs(_backgroundGrid.ActualHeight / 2) - Math.Abs(_transform.TranslateY) - grid.ActualHeight * scale/ 2;
                 }
                 else
                 {
-                    _transform.TranslateY += Math.Abs(_backgroundGrid.ActualHeight / 2) - Math.Abs(_transform.TranslateY) - this.Height * _transform.ScaleY / 2;
+                    _transform.TranslateY += Math.Abs(_backgroundGrid.ActualHeight / 2) - Math.Abs(_transform.TranslateY) - grid.ActualHeight * scale/ 2;
                 }
 
             }
@@ -136,6 +138,8 @@ namespace IrtPhotos.Source
             }
         }
 
+        int scale = 1;
+
         private void addPressed(object sender, TappedRoutedEventArgs e)
         {
             // scanAnimation.Stop();
@@ -146,6 +150,7 @@ namespace IrtPhotos.Source
                 attention.Stop();
                 turnToButton.Begin();
                 isQr = false;
+                scale = 1;
                
             }
             else
@@ -153,13 +158,13 @@ namespace IrtPhotos.Source
                 attention.Stop();
                 turnToQr.Begin();
                 isQr = true;
+                scale = 2;
             }
 
         }
 
         private async void turnToQr_Completed(object sender, object e)
         {
-            
             //await Task.Delay(10000);
             //turnToButton.Begin();
             // scanAnimation.Begin();

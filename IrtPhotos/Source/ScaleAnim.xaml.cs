@@ -18,26 +18,15 @@ using Windows.UI.Xaml.Navigation;
 
 namespace IrtPhotos.Source
 {
-    public sealed partial class AppearingDisapearingAnimations : UserControl
+    public sealed partial class ScaleAnim : UserControl
     {
-        public AppearingDisapearingAnimations()
+        public ScaleAnim()
         {
             this.InitializeComponent();
         }
-
-        public Storyboard getAppearing()
+        public Storyboard getImageScale()
         {
-            return appearence;
-        }  
-        public Storyboard getImageAppearing()
-        {
-            return imageAppearence;
+            return imageScale;
         }
-        public Storyboard getImageDeleting()
-        {
-            return imageDeleting;
-        }
-
-
     }
 }

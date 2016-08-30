@@ -60,11 +60,13 @@ namespace IrtPhotos.Source
         PlayButton _playButton;
         Storyboard _scaleAnim;
         private Storyboard _closeAnim;
+        public int Angle = 0;
+        public bool IsMoved = false;
 
         public IrtVideo(Grid back, int angle)
         {
             _backgroundGrid = back;
-
+            Angle = angle;
             _grid = new Grid();
             _shadowGrid = new Grid();
             _shadowOnTopRect = new Rectangle();
@@ -78,8 +80,9 @@ namespace IrtPhotos.Source
             _imageAppearence = animation.getImageAppearing();
             _deletingAnim = animation.getImageDeleting();
             _appearence = animation.getAppearing();
-            _scaleAnim = animation.getImageScale();
-            
+            var scaleAnim = new ScaleAnim();
+            _scaleAnim = scaleAnim.getImageScale();
+
 
             var rotate = (DoubleAnimationUsingKeyFrames)_imageAppearence.Children[0];
             rotate.KeyFrames[1].SetValue(DiscreteDoubleKeyFrame.ValueProperty, angle);
@@ -110,6 +113,7 @@ namespace IrtPhotos.Source
             _grid.PointerReleased += _grid_PointerReleased;
 
             player = new MediaPlayerElement();
+            
             r = new Rectangle(); //rectangle for image frame
             r.Fill = new SolidColorBrush(Colors.White);
             //r.RadiusX = borderWidth / 2;
@@ -148,8 +152,8 @@ namespace IrtPhotos.Source
                     _playButton.appeareButton();
             }else
             {
-                player.MediaPlayer.Play();
-                    _playButton.disapeareButton();
+              //  player.MediaPlayer.Play();
+              //      _playButton.disapeareButton();
             }
             
         }
@@ -196,7 +200,9 @@ namespace IrtPhotos.Source
         public void LoadVideo(string link)
         {
             _link = link;
-            player.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/video.mp4"));
+            player.Source = MediaSource.CreateFromUri(new Uri(link));
+            _playButton.Tapped += _playButton_Tapped;
+
             //player.MediaPlayer.MediaOpened += MediaPlayer_MediaOpened;
 
             _imageAppearence.Completed += ImageAppearence_Completed;
@@ -211,9 +217,16 @@ namespace IrtPhotos.Source
 
             //player.AutoPlay = true;
             player.MediaPlayer.MediaEnded += MediaPlayer_MediaEnded;
-            
+
+            _grid.HorizontalAlignment = HorizontalAlignment.Center;
+           _grid.VerticalAlignment = VerticalAlignment.Center;
+
+
             realWidth = 1920;
             realHeight = 1080;
+            //realWidth = 1280;
+            //realHeight = 720;
+
 
             player.Width = realWidth;
             player.Height = realHeight;
@@ -230,10 +243,19 @@ namespace IrtPhotos.Source
         private void MediaPlayer_MediaEnded(Windows.Media.Playback.MediaPlayer sender, object args)
         {
             _isPlayingStarted = false;
-            _grid.Children.Remove(_playButton);
-            _playButton = new PlayButton();
-            _playButton.Tapped += _playButton_Tapped;
-            _grid.Children.Add(_playButton);
+            try
+            {
+                _grid.Children.Remove(_playButton);
+                _playButton = new PlayButton();
+                _playButton.Tapped += _playButton_Tapped;
+                _grid.Children.Add(_playButton);
+
+            }
+            catch(Exception)
+            {
+
+            }
+
 
         }
 
@@ -298,7 +320,7 @@ namespace IrtPhotos.Source
         private void Canvas_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             if (e.Container == null) return;
-
+            IsMoved = true;
 
             var potentialRotation = _transform.Rotation + e.Delta.Rotation;
             if (calcProjectionX(potentialRotation) < _backgroundGrid.ActualWidth &&

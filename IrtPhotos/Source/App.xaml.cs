@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNet.SignalR.Client;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -14,33 +16,34 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Microsoft.AspNet.SignalR.Client;
-using Windows.UI.ViewManagement;
 
-namespace IrtPhotos
+namespace SharePhotoClient
 {
-    /// <summary>
-    /// Provides application-specific behavior to supplement the default Application class.
-    /// </summary>
     sealed partial class App : Application
     {
+
         public HubConnection Connection { get; set; }
         public IHubProxy HubProxy { get; set; }
-
+        
         public App()
         {
-          
             this.InitializeComponent();
-            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.FullScreen;
             this.Suspending += OnSuspending;
         }
 
         public void CreateConnection(string url)
         {
             Connection = new HubConnection(url);
-            //  Connection.StateChanged += stateChanged;
+            Connection.StateChanged += stateChanged;
             HubProxy = Connection.CreateHubProxy("FileTransferHub");
             Connection.Start().Wait();
+        }
+
+        private void stateChanged(StateChange change)
+        {
+            Debug.WriteLine("new state " + change.NewState.ToString());
+            
+            //add reconect?
         }
 
         /// <summary>
@@ -50,11 +53,11 @@ namespace IrtPhotos
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-//#if DEBUG
-//            if (System.Diagnostics.Debugger.IsAttached)
-//            {
-//                this.DebugSettings.EnableFrameRateCounter = true;
-//            }
+            //#if DEBUG
+            //            if (System.Diagnostics.Debugger.IsAttached)
+            //            {
+            //                this.DebugSettings.EnableFrameRateCounter = true;
+            //            }
 //#endif
             Frame rootFrame = Window.Current.Content as Frame;
 
