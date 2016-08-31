@@ -33,51 +33,8 @@
                 <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
             </DoubleAnimationUsingKeyFrames>
 
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="drop1">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="-600"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="drop1">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="-600"/>
-            </DoubleAnimationUsingKeyFrames>
 
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="drop2">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="-750"/>
-            </DoubleAnimationUsingKeyFrames>
-
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="drop3">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="600"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="drop3">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="-600"/>
-            </DoubleAnimationUsingKeyFrames>
-
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="drop4">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="-600"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="drop4">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="600"/>
-            </DoubleAnimationUsingKeyFrames>
-
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="drop5">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="750"/>
-            </DoubleAnimationUsingKeyFrames>
-
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="drop6">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="600"/>
-            </DoubleAnimationUsingKeyFrames>
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)" Storyboard.TargetName="drop6">
-                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="600"/>
-            </DoubleAnimationUsingKeyFrames>
+     
 
         </Storyboard>
         
@@ -111,8 +68,7 @@
                 <EasingDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
-        
-       
+
     </UserControl.Resources>
 
     <Grid>
@@ -122,108 +78,71 @@
             </Grid.RenderTransform>
 
             <Image x:Name="drop1" 
-               
-               CacheMode="BitmapCache"
-               Margin="0,0,600,600" 
-               RenderTransformOrigin="0.5,0.5" 
-               d:LayoutOverrides="Height" 
-               UseLayoutRounding="False" 
-               d:LayoutRounding="Auto">
+               CacheMode="BitmapCache" 
+               RenderTransformOrigin="0.5,0.5" >
                 <Image.Source>
                     <BitmapImage UriSource="ms-appx:///Assets/Appear_Image_icon.png" />
                 </Image.Source>
                 <Image.RenderTransform>
-                    <CompositeTransform Rotation="140" ScaleX="0.07" ScaleY="0.07" />
+                    <CompositeTransform Rotation="140" ScaleX="0.07" ScaleY="0.07" TranslateX="-600" TranslateY="-600"/>
                 </Image.RenderTransform>
             </Image>
-            <Image x:Name="drop2" 
-              
-           
-               Stretch="Uniform" 
+            
+            <Image x:Name="drop2"   
                CacheMode="BitmapCache"
-               Margin="0,0,0,750" 
-               RenderTransformOrigin="0.5,0.5" 
-               d:LayoutOverrides="Height" 
-               UseLayoutRounding="False" 
-               d:LayoutRounding="Auto"
-                
-               >
+               RenderTransformOrigin="0.5,0.5" >
                 <Image.Source>
                     <BitmapImage UriSource="ms-appx:///Assets/Appear_Image_icon.png" />
                 </Image.Source>
                 <Image.RenderTransform>
-                    <CompositeTransform Rotation="180" ScaleX="0.07" ScaleY="0.07"/>
+                    <CompositeTransform Rotation="180" ScaleX="0.07" ScaleY="0.07" TranslateX="0" TranslateY="-750"/>
                 </Image.RenderTransform>
             </Image>
+            
             <Image x:Name="drop3" 
-               Stretch="Uniform" 
                CacheMode="BitmapCache"
-               Margin="600,0,0,600" 
-               RenderTransformOrigin="0.5,0.5" 
-               d:LayoutOverrides="Height" 
-               UseLayoutRounding="False" 
-               d:LayoutRounding="Auto"
-               >
-
+               RenderTransformOrigin="0.5,0.5">
                 <Image.Source>
                     <BitmapImage UriSource="ms-appx:///Assets/Appear_Image_icon.png" />
                 </Image.Source>
                 <Image.RenderTransform>
-                    
-                    <CompositeTransform Rotation="-140" ScaleX="0.07" ScaleY="0.07"/>
+                    <CompositeTransform Rotation="-140" ScaleX="0.07" ScaleY="0.07" TranslateX="600" TranslateY="-600"/>
                 </Image.RenderTransform>
             </Image>
 
             <Image Name="drop5" 
                CacheMode="BitmapCache"
-        
-               Stretch="Uniform" 
-               Margin="0,750,0,0" 
-               d:LayoutOverrides="Height" 
-               RenderTransformOrigin="0.5,0.5"
-               >
+               RenderTransformOrigin="0.5,0.5">
                 <Image.Source>
                     <BitmapImage UriSource="ms-appx:///Assets/Appear_Image_icon.png" />
                 </Image.Source>
                 <Image.RenderTransform>
-                    <CompositeTransform Rotation="0" ScaleX="0.07" ScaleY="0.07"/>
+                    <CompositeTransform Rotation="0" ScaleX="0.07" ScaleY="0.07" TranslateY="750"/>
                 </Image.RenderTransform>
             </Image>
+            
             <Image x:Name="drop4" 
-              
-
-               Stretch="Uniform" 
                CacheMode="BitmapCache"
-               Margin="0,600,600,0" 
-               RenderTransformOrigin="0.5,0.5" 
-               d:LayoutOverrides="Height" 
-               UseLayoutRounding="False" 
-               d:LayoutRounding="Auto"
-               >
+               RenderTransformOrigin="0.5,0.5">
                 <Image.Source>
                     <BitmapImage UriSource="ms-appx:///Assets/Appear_Image_icon.png" />
                 </Image.Source>
                 <Image.RenderTransform>
-                    <CompositeTransform Rotation="40" ScaleX="0.07" ScaleY="0.07"/>
+                    <CompositeTransform Rotation="40" ScaleX="0.07" ScaleY="0.07" TranslateX="-600" TranslateY="600"/>
                 </Image.RenderTransform>
             </Image>
-            <Image x:Name="drop6" 
-
-               Stretch="Uniform" 
+            
+            <Image x:Name="drop6"  
                CacheMode="BitmapCache"
-               Margin="600,600,0,0" 
-               RenderTransformOrigin="0.5,0.5" 
-               d:LayoutOverrides="Height" 
-               UseLayoutRounding="False" 
-               d:LayoutRounding="Auto"
-               >
+               RenderTransformOrigin="0.5,0.5" >
                 <Image.Source>
                     <BitmapImage UriSource="ms-appx:///Assets/Appear_Image_icon.png" />
                 </Image.Source>
                 <Image.RenderTransform>
-                    <CompositeTransform Rotation="-40" ScaleX="0.07" ScaleY="0.07"/>
+                    <CompositeTransform Rotation="-40" ScaleX="0.07" ScaleY="0.07" TranslateX="600" TranslateY="600"/>
                 </Image.RenderTransform>
             </Image>
+            
         </Grid>
     </Grid>
 </UserControl>

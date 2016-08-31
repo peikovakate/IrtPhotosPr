@@ -211,6 +211,7 @@ namespace IrtPhotos.Source
         private void _deletingAnim_Completed(object sender, object e)
         {
             _backgroundGrid.Children.Remove(_grid);
+            _backgroundGrid.Children.Remove(animation);
         }
 
         public async Task LoadImage(string link)
@@ -337,9 +338,7 @@ namespace IrtPhotos.Source
 
         private void Canvas_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            if (e.Container == null) return;
-
-            
+         //   if (e.Container == null) return;
 
             var potentialRotation = _transform.Rotation + e.Delta.Rotation;
             if (calcProjectionX(potentialRotation)<_backgroundGrid.ActualWidth && 
@@ -469,14 +468,15 @@ namespace IrtPhotos.Source
 
         private void Canvas_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            if (e.Container == null) return;
+            //if (e.Container == null) return;
             _direction.X = false;
             _direction.Y = false;
+            _transform = (CompositeTransform)_grid.RenderTransform;
         }
 
         private void Canvas_ManipulationStarting(object sender, ManipulationStartingRoutedEventArgs e)
         {
-            if (e.Container == null) return;
+            //if (e.Container == null) return;
             IsMoved = true;
             foreach (var item in _backgroundGrid.Children)
             {

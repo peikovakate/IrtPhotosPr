@@ -65,14 +65,12 @@ namespace IrtPhotos
         {
             QrAnimation.Stop();
             QrAnimation.Begin();
-            
 
         }
 
         private void goToSecondPage(object sender, PointerRoutedEventArgs e)
         {
             QrAnimationReversed.Begin();
-            
             
         }
 

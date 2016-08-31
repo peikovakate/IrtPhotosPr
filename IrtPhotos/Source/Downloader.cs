@@ -31,9 +31,9 @@ namespace IrtPhotos.Source
         {
         }
 
+
         public async Task loadImage(WriteableBitmap outputBitmap, string url)
         {
-
             var client = new HttpClient();
             HttpRequestMessage message = new HttpRequestMessage()
             {

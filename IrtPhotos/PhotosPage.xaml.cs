@@ -47,106 +47,72 @@ namespace IrtPhotos
         {
             this.InitializeComponent();
             _images = new List<IrtImage>();
+            Task.Run(() =>
+            {
+                ((App)Application.Current).CreateConnection(URL + "/Notifier");
+                ((App)Application.Current).HubProxy.On<long, string, int, int>("NotifyExtended", onNotificationExtended);
+                ((App)Application.Current).HubProxy.Invoke("Register", GUID);
+            });
 
-            ((App)Application.Current).CreateConnection(URL + "/Notifier");
-            ((App)Application.Current).HubProxy.On<long, string, int, int>("NotifyExtended", onNotificationExtended);
-            ((App)Application.Current).HubProxy.Invoke("Register", GUID);
+
 
             addImButton._backgroundGrid = BackgroundGrid;
+
             Canvas.SetZIndex(addImButton, 1000);
-            //addImButton.DoubleTapped += AddImButton_DoubleTapped;
+
             
             var transform = (CompositeTransform)(addImButton.RenderTransform);
             transform.TranslateX = -1000;
 
-            //AddImage(_link[0]);
-            //AddVideo();
-            //AddSeveral(4);
-            //var video = new IrtVideo(PhotosGrid, 0);
-            //video.LoadVideo("ms-appx:///Assets/video.mp4");
         }
+
+
+        
 
         private async void onNotificationExtended(long id, string type, int width, int height)
         {
-            await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-            {
-                if (type.Contains("image"))
-                {
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+           {
+               if (type.Contains("image"))
+               {
 
-               
+                   int angle = 0;
+                   bool isRotated = true;
+                   for (int i = 0; i < _images.Count; i++)
+                   {
+                       Debug.WriteLine(i);
+                       if (_images[i].IsMoved)
+                       {
+                           Debug.WriteLine("rotated");
+                           isRotated = false;
+                           break;
+                       }
+                   }
+                   if (isRotated)
+                   {
+                       angle = _images.Count * 15;
+                   }
+                   IrtImage im = new IrtImage(PhotosGrid, angle, width, height);
+                   _images.Add(im);
 
-                    int angle = 0;
-                    bool isRotated = true;
-                    for(int i=0; i<_images.Count; i++)
-                    {
-                        Debug.WriteLine(i);
-                        if (_images[i].IsMoved)
-                        {
-                            Debug.WriteLine("rotated");
-                            isRotated = false;
-                            break;
-                        }
-                    }
-                    if (isRotated)
-                    {
-                        angle = _images.Count * 15;
-                    }
-                    IrtImage im = new IrtImage(PhotosGrid, angle, width, height);
-                    _images.Add(im);
-                    
+                   Downloader downloader = new Downloader();
+                   WriteableBitmap bitmap = new WriteableBitmap(width, height);
+                   Image image = new Image();
+                   image.Source = bitmap;
+                   im.LoadImage(image);
 
 
-                    Downloader downloader = new Downloader();
-                    WriteableBitmap bitmap = new WriteableBitmap(width, height);
-                    Image image = new Image();
-                    image.Source = bitmap;
-                    im.LoadImage(image);
+                   downloader.loadImage(bitmap, URL + "/api/media?guid=" + GUID + "&id=" + id.ToString());
 
-                    await downloader.loadImage(bitmap, URL + "/api/media?guid=" + GUID + "&id=" + id.ToString());
-                }
-                else
-                {
-                   // MediaElement media = new MediaElement();
+               }
+               else
+               {
 
-                    var video = new IrtVideo(PhotosGrid, 0);
-                    video.LoadVideo(URL + "/api/media?guid=" + GUID + "&id=" + id.ToString());
-                }
-            });
+                   var video = new IrtVideo(PhotosGrid, 0);
+                   video.LoadVideo(URL + "/api/media?guid=" + GUID + "&id=" + id.ToString());
+               }
+           });
         }
-
-
-        //private async void AddImButton_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
-        //{
-        //    Random r = new Random();
-            
-        //    await AddImage(_link[r.Next(0, 2)]);
-        //}
-
-        //private async Task AddImage(string link)
-        //{    
-        //    var image = new IrtImage(PhotosGrid, 0);
-        //    await image.LoadImage(link);
-
-        //}
-
-        //private void AddVideo()
-        //{
-        //    var video = new IrtVideo(PhotosGrid, 0);
-        //    video.LoadVideo("");
-        //}
-
-        //private async void AddSeveral(int amount)
-        //{
-        //    Random r = new Random();
-        //    for (int i = 0; i < amount - 1; i++)
-        //    {
-        //        var image = new IrtImage(PhotosGrid, i * 15);
-        //        image.LoadImage(_link[r.Next(0, 2)]);
-        //        await Task.Delay(500);
-        //    }
-        //    var video = new IrtVideo(PhotosGrid, (amount - 1) * 15);
-        //    video.LoadVideo("");
-        //}
 
 
     }

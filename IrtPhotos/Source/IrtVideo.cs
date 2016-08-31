@@ -319,7 +319,7 @@ namespace IrtPhotos.Source
 
         private void Canvas_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            if (e.Container == null) return;
+           
             IsMoved = true;
 
             var potentialRotation = _transform.Rotation + e.Delta.Rotation;
@@ -442,7 +442,7 @@ namespace IrtPhotos.Source
 
         private void Canvas_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            if (e.Container == null) return;
+           
             _direction.X = false;
             _direction.Y = false;
         }
